@@ -16,7 +16,6 @@ public class Search {
     public Search(SQLiteDatabase mDb){
         this.mDb = mDb;
         mDb.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS fts_example_table USING fts4 (Name_build);");
-        Log.d("test", "создали таблицу fts_example_table");
         mDb.execSQL("INSERT INTO fts_example_table SELECT Name_build FROM Building;");
         Log.d("test", "вставили в таблицу");
     }
@@ -47,12 +46,10 @@ public class Search {
 
         for (String split : splits)
             builder.append(split).append("*").append(" ");
-        Log.d("test", "в appendToken получили результат "+builder.toString().trim());
         return builder.toString().trim();
     }
 
     public List<String> search(String query) {
-        Log.d("test", "в search получили запрос "+query);
         Cursor cursor = searchAnker(query);
         List <String> list = new ArrayList<String>();
         try {
@@ -64,14 +61,9 @@ public class Search {
         } catch (Exception ex) {
             list.clear();
         }
-        for(int i=0; i<list.size(); i++)
-            Log.d("test", "в search получили результат "+list.get(i));
         return list;
     }
 
-    //поиск ведем по названию и адресу для зданий
-    //по названию  и кабинету для организаций
-    //возвращать будем LatLng или номер кабинета
     public <T> T choise(String select){
         String query = "SELECT Number_of_org FROM Building WHERE Name_build='"+select+"'";
         Cursor cursor = mDb.rawQuery(query, null);
